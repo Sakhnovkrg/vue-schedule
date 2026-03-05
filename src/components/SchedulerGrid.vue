@@ -102,7 +102,7 @@ const dayColumns = computed(() => {
       i < props.weekDates.length - 1 && props.weekDates[i + 1].getMonth() === m
     return {
       index: i,
-      name: locale.value.daysShort[i],
+      name: locale.value.daysShort[date.getDay() === 0 ? 6 : date.getDay() - 1],
       date: date.getDate(),
       fullDate: formatDate(date),
       isToday: formatDate(date) === formatDate(new Date()),

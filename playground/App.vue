@@ -4,6 +4,7 @@ import Scheduler from '../src/components/Scheduler.vue'
 import type { WorkingRange } from '../src/types'
 import { hoursToTime, timeToHours } from '../src/utils/time'
 import { getWeekDates, formatDate } from '../src/utils/weeks'
+import { builtinLocales } from '../src/locales'
 import {
   getRangesForWeek,
   createRange as apiCreate,
@@ -40,6 +41,7 @@ async function loadRanges() {
 function onMonthChange() {}
 
 function onWeekChange(start: Date) {
+  ranges.value = []
   currentWeekDates.value = getWeekDates(start).map(d => formatDate(d))
   loadRanges()
 }
@@ -47,7 +49,8 @@ function onWeekChange(start: Date) {
 function toInternal(r: ApiWorkingRange): WorkingRange {
   const date = new Date(r.work_date + 'T00:00:00')
   const dayOfWeek = date.getDay()
-  const day = dayOfWeek === 0 ? 6 : dayOfWeek - 1
+  const wsOn = builtinLocales[locale.value]?.weekStartsOn ?? 1
+  const day = (dayOfWeek - wsOn + 7) % 7
 
   return {
     id: String(r.id),

@@ -21,6 +21,7 @@ export const en: SchedulerLocale = {
   paste: 'Paste',
   copyDay: 'Copy day',
   clearDay: 'Clear day',
+  weekStartsOn: 0,
 }
 
 export const ru: SchedulerLocale = {
@@ -44,6 +45,7 @@ export const ru: SchedulerLocale = {
   paste: 'Вставить',
   copyDay: 'Копировать день',
   clearDay: 'Очистить день',
+  weekStartsOn: 1,
 }
 
 export const kk: SchedulerLocale = {
@@ -67,6 +69,7 @@ export const kk: SchedulerLocale = {
   paste: 'Қою',
   copyDay: 'Күнді көшіру',
   clearDay: 'Күнді тазалау',
+  weekStartsOn: 1,
 }
 
 export const builtinLocales: Record<string, SchedulerLocale> = { en, ru, kk }

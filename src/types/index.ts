@@ -62,4 +62,5 @@ export interface SchedulerLocale {
   paste: string
   copyDay: string
   clearDay: string
+  weekStartsOn: number
 }

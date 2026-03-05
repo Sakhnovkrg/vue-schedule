@@ -1,20 +1,23 @@
 import type { WeekInfo } from '../types'
 
-function getMonday(date: Date): Date {
+function getWeekStart(date: Date, weekStartsOn: number): Date {
   const d = new Date(date)
   const dayOfWeek = d.getDay()
-  const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek
-  d.setDate(d.getDate() + diff)
+  const diff = (dayOfWeek - weekStartsOn + 7) % 7
+  d.setDate(d.getDate() - diff)
   d.setHours(0, 0, 0, 0)
   return d
 }
 
-export function getWeeksOfMonth(month: Date): WeekInfo[] {
+export function getWeeksOfMonth(
+  month: Date,
+  weekStartsOn: number = 1
+): WeekInfo[] {
   const year = month.getFullYear()
   const m = month.getMonth()
 
   const lastDay = new Date(year, m + 1, 0)
-  const firstMonday = getMonday(new Date(year, m, 1))
+  const firstMonday = getWeekStart(new Date(year, m, 1), weekStartsOn)
 
   const weeks: WeekInfo[] = []
 

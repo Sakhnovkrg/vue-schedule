@@ -66,7 +66,7 @@ function onWeekChange(start: Date, end: Date) {
 ```ts
 interface WorkingRange {
   id: string
-  day: number // 0=Пн .. 6=Вс
+  day: number // индекс колонки (0 = первый день недели)
   date: string // "2025-02-03"
   start: number // час начала (9 = 9:00, 9.5 = 9:30)
   end: number // час окончания (18 = 18:00, 17.5 = 17:30)
@@ -171,6 +171,7 @@ const myLocale: SchedulerLocale = {
   paste: 'Paste',
   copyDay: 'Copy day',
   clearDay: 'Clear day',
+  weekStartsOn: 1, // 0 = воскресенье, 1 = понедельник
 }
 ```
 

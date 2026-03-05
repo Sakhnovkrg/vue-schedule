@@ -108,11 +108,15 @@ function nextMonth() {
   emit('month-change', d)
 }
 
-const weeks = computed(() => getWeeksOfMonth(currentMonth.value))
+const weekStartsOn = computed(() => resolvedLocale.value.weekStartsOn)
+
+const weeks = computed(() =>
+  getWeeksOfMonth(currentMonth.value, weekStartsOn.value)
+)
 const activeWeekIndex = ref(0)
 
 watch(
-  currentMonth,
+  [currentMonth, weekStartsOn],
   () => {
     activeWeekIndex.value = getCurrentWeekIndex(currentMonth.value, weeks.value)
     const week = weeks.value[activeWeekIndex.value]
