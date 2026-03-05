@@ -87,7 +87,7 @@ const clampedWeeks = computed(() => {
   padding: 6px 14px;
   border: 1px solid var(--scheduler-border-color, #d0d5dd);
   background: var(--scheduler-bg, #fff);
-  border-radius: 8px;
+  border-radius: var(--scheduler-radius, 8px);
   cursor: pointer;
   font-size: 13px;
   font-family: inherit;

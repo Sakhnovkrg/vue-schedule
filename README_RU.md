@@ -178,7 +178,7 @@ const myLocale: SchedulerLocale = {
 
 ## CSS-переменные
 
-Все цвета настраиваются через CSS custom properties. Задавайте их на родительском элементе:
+Настраиваются через CSS custom properties на родительском элементе:
 
 ```css
 .my-scheduler {
@@ -191,6 +191,8 @@ const myLocale: SchedulerLocale = {
   --scheduler-range-border: #21a888;
   --scheduler-range-opacity: 0.85;
   --scheduler-range-selected-bg: #1a9e7e;
+  --scheduler-radius: 8px;
+  --scheduler-range-radius: 4px;
 }
 ```
 

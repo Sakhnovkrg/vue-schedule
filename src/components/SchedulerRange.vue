@@ -63,7 +63,7 @@ const timeLabel = computed(() => {
   background: var(--scheduler-range-bg, #4a90d9);
   opacity: var(--scheduler-range-opacity, 0.85);
   border: 1px solid var(--scheduler-range-border, #3572b0);
-  border-radius: 4px;
+  border-radius: var(--scheduler-range-radius, 4px);
   cursor: grab;
   user-select: none;
   z-index: 2;
@@ -120,11 +120,11 @@ const timeLabel = computed(() => {
 }
 
 .resize-handle.top {
-  border-radius: 4px 4px 0 0;
+  border-radius: var(--scheduler-range-radius, 4px) var(--scheduler-range-radius, 4px) 0 0;
 }
 
 .resize-handle.bottom {
-  border-radius: 0 0 4px 4px;
+  border-radius: 0 0 var(--scheduler-range-radius, 4px) var(--scheduler-range-radius, 4px);
 }
 
 .range-content {

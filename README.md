@@ -182,7 +182,7 @@ The `locale` prop is reactive — changing it re-renders the UI instantly.
 
 ## CSS Variables
 
-All colors are customizable via CSS custom properties on the parent element:
+Customizable via CSS custom properties on the parent element:
 
 ```css
 .my-scheduler {
@@ -195,6 +195,8 @@ All colors are customizable via CSS custom properties on the parent element:
   --scheduler-range-border: #21a888;
   --scheduler-range-opacity: 0.85;
   --scheduler-range-selected-bg: #1a9e7e;
+  --scheduler-radius: 8px;
+  --scheduler-range-radius: 4px;
 }
 ```
 

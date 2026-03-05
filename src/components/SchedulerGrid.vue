@@ -53,6 +53,7 @@ const emit = defineEmits<{
   'clear-selection': []
   'context-range': [e: MouseEvent, rangeId: string, day: number]
   'context-day': [e: MouseEvent, day: number]
+  refresh: []
 }>()
 
 const columnRefs = ref<HTMLElement[]>([])
@@ -462,7 +463,15 @@ function onRangeTouchStart(e: TouchEvent, rangeId: string) {
       class="grid-header"
       :style="gridMinWidth ? { minWidth: gridMinWidth + 'px' } : undefined"
     >
-      <div class="time-gutter header-gutter" />
+      <div class="time-gutter header-gutter">
+        <button class="refresh-btn" @click="emit('refresh')">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+            <path
+              d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
+            />
+          </svg>
+        </button>
+      </div>
       <div
         v-for="col in dayColumns"
         :key="col.index"
@@ -574,7 +583,7 @@ function onRangeTouchStart(e: TouchEvent, rangeId: string) {
 .scheduler-grid {
   position: relative;
   border: 1px solid var(--scheduler-border-color, #d0d5dd);
-  border-radius: 8px;
+  border-radius: var(--scheduler-radius, 8px);
   background: var(--scheduler-bg, #fff);
   user-select: none;
   scrollbar-width: thin;
@@ -665,6 +674,28 @@ function onRangeTouchStart(e: TouchEvent, rangeId: string) {
 .time-gutter.header-gutter {
   background: var(--scheduler-header-bg, #f9fafb);
   z-index: 21;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.refresh-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: none;
+  border-radius: var(--scheduler-radius, 8px);
+  cursor: pointer;
+  color: color-mix(in srgb, var(--scheduler-border-color, #d0d5dd) 50%, #000);
+  transition: color 0.15s, background 0.15s;
+}
+
+.refresh-btn:hover {
+  color: var(--scheduler-range-bg, #4a90d9);
+  background: color-mix(in srgb, var(--scheduler-border-color, #d0d5dd) 30%, transparent);
 }
 
 .hour-label {
@@ -736,7 +767,7 @@ function onRangeTouchStart(e: TouchEvent, rangeId: string) {
   right: 2px;
   background: var(--scheduler-range-bg, #4a90d9);
   opacity: 0.4;
-  border-radius: 4px;
+  border-radius: var(--scheduler-range-radius, 4px);
   pointer-events: none;
   z-index: 1;
 }
@@ -761,7 +792,7 @@ function onRangeTouchStart(e: TouchEvent, rangeId: string) {
   align-items: center;
   justify-content: center;
   z-index: 30;
-  border-radius: 8px;
+  border-radius: var(--scheduler-radius, 8px);
 }
 
 .scheduler-spinner {

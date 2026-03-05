@@ -69,7 +69,7 @@ const style = computed(() => ({
   z-index: 1000;
   background: #fff;
   border: 1px solid var(--scheduler-border-color, #e0e4ea);
-  border-radius: 10px;
+  border-radius: var(--scheduler-radius, 8px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   padding: 4px 0;
   min-width: 160px;

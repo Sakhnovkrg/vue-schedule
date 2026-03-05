@@ -136,6 +136,13 @@ function onWeekSelect(index: number) {
   }
 }
 
+function refresh() {
+  const week = activeWeek.value
+  if (week) {
+    emit('week-change', week.start, week.end)
+  }
+}
+
 const gridRef = ref<InstanceType<typeof SchedulerGrid> | null>(null)
 
 const selection = useSelection()
@@ -336,6 +343,7 @@ function onRangeDelete(id: string) {
       @clear-selection="onClearSelection"
       @context-range="onContextRange"
       @context-day="onContextDay"
+      @refresh="refresh"
     >
       <template v-if="$slots.range" #range="{ range, timeLabel }">
         <slot name="range" :range="toHours(range)" :time-label="timeLabel" />
@@ -378,7 +386,7 @@ function onRangeDelete(id: string) {
   padding: 6px 14px;
   border: 1px solid var(--scheduler-border-color, #d0d5dd);
   background: var(--scheduler-bg, #fff);
-  border-radius: 8px;
+  border-radius: var(--scheduler-radius, 8px);
   cursor: pointer;
   font-size: 15px;
   font-family: inherit;
