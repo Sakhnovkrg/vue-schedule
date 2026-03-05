@@ -309,6 +309,7 @@ function onRangeDelete(id: string) {
       <SchedulerWeekSelector
         :weeks="weeks"
         :active-index="activeWeekIndex"
+        :month="currentMonth"
         @select="onWeekSelect"
       />
     </div>

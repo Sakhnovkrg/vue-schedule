@@ -1,14 +1,22 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { WeekInfo } from '../types'
 
-defineProps<{
+const props = defineProps<{
   weeks: WeekInfo[]
   activeIndex: number
+  month: Date
 }>()
 
 const emit = defineEmits<{
   select: [index: number]
 }>()
+
+const currentMonth = computed(() => props.month.getMonth())
+
+function isOutOfMonth(date: Date): boolean {
+  return date.getMonth() !== currentMonth.value
+}
 </script>
 
 <template>
@@ -20,11 +28,23 @@ const emit = defineEmits<{
       :class="{ active: week.index === activeIndex }"
       @click="emit('select', week.index)"
     >
-      <span class="week-label-inline">{{ week.label }}</span>
+      <span class="week-label-inline">
+        <span :class="{ 'out-of-month': isOutOfMonth(week.start) }">{{
+          week.start.getDate()
+        }}</span>
+        <span>–</span>
+        <span :class="{ 'out-of-month': isOutOfMonth(week.end) }">{{
+          week.end.getDate()
+        }}</span>
+      </span>
       <span class="week-label-stacked">
-        <span>{{ week.label.split('–')[0] }}</span>
+        <span :class="{ 'out-of-month': isOutOfMonth(week.start) }">{{
+          week.start.getDate()
+        }}</span>
         <span class="week-dash">–</span>
-        <span>{{ week.label.split('–')[1] }}</span>
+        <span :class="{ 'out-of-month': isOutOfMonth(week.end) }">{{
+          week.end.getDate()
+        }}</span>
       </span>
     </button>
   </div>
@@ -88,5 +108,9 @@ const emit = defineEmits<{
   background: var(--scheduler-range-bg, #4a90d9);
   color: #fff;
   border-color: var(--scheduler-range-bg, #4a90d9);
+}
+
+.out-of-month {
+  opacity: 0.6;
 }
 </style>
