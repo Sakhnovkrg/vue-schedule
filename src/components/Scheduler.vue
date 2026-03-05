@@ -29,6 +29,7 @@ const props = withDefaults(
     stepMinutes?: number
     maxHeight?: number
     minColumnWidth?: number
+    monthRange?: [number, number]
   }>(),
   {
     month: () => new Date(),
@@ -41,6 +42,7 @@ const props = withDefaults(
     stepMinutes: 30,
     maxHeight: 0,
     minColumnWidth: 0,
+    monthRange: undefined,
   }
 )
 
@@ -94,7 +96,34 @@ const monthLabel = computed(() => {
   return `${m} ${currentMonth.value.getFullYear()}`
 })
 
+function monthKey(d: Date) {
+  return d.getFullYear() * 12 + d.getMonth()
+}
+
+const canGoPrev = computed(() => {
+  if (!props.monthRange) return true
+  const now = new Date()
+  const min = new Date(
+    now.getFullYear(),
+    now.getMonth() + props.monthRange[0],
+    1
+  )
+  return monthKey(currentMonth.value) > monthKey(min)
+})
+
+const canGoNext = computed(() => {
+  if (!props.monthRange) return true
+  const now = new Date()
+  const max = new Date(
+    now.getFullYear(),
+    now.getMonth() + props.monthRange[1],
+    1
+  )
+  return monthKey(currentMonth.value) < monthKey(max)
+})
+
 function prevMonth() {
+  if (!canGoPrev.value) return
   const d = new Date(currentMonth.value)
   d.setMonth(d.getMonth() - 1)
   currentMonth.value = d
@@ -102,6 +131,7 @@ function prevMonth() {
 }
 
 function nextMonth() {
+  if (!canGoNext.value) return
   const d = new Date(currentMonth.value)
   d.setMonth(d.getMonth() + 1)
   currentMonth.value = d
@@ -313,9 +343,21 @@ function onRangeDelete(id: string) {
   <div class="scheduler" tabindex="0">
     <div class="scheduler-nav">
       <div class="scheduler-month-nav">
-        <button class="scheduler-nav-btn" @click="prevMonth">&larr;</button>
+        <button
+          class="scheduler-nav-btn"
+          :disabled="!canGoPrev"
+          @click="prevMonth"
+        >
+          &larr;
+        </button>
         <span class="scheduler-month-label">{{ monthLabel }}</span>
-        <button class="scheduler-nav-btn" @click="nextMonth">&rarr;</button>
+        <button
+          class="scheduler-nav-btn"
+          :disabled="!canGoNext"
+          @click="nextMonth"
+        >
+          &rarr;
+        </button>
       </div>
       <SchedulerWeekSelector
         :weeks="weeks"
@@ -400,8 +442,13 @@ function onRangeDelete(id: string) {
     border-color 0.15s;
 }
 
-.scheduler-nav-btn:hover {
+.scheduler-nav-btn:hover:not(:disabled) {
   background: var(--scheduler-header-bg, #f7f8fa);
+}
+
+.scheduler-nav-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
 }
 
 @media (max-width: 600px) {

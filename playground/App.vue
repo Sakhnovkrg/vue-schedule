@@ -243,6 +243,7 @@ async function onClipboardPaste(newRanges: WorkingRange[]) {
       :end-hour="endHour"
       :step-minutes="stepMinutes"
       :locale="locale"
+      :month-range="[-1, 2]"
       :max-height="400"
       :min-column-width="80"
       @range-create="onRangeCreate"

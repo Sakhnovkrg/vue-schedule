@@ -93,6 +93,7 @@ Set `pending: true` to show a pulsing spinner on a range. Useful for optimistic 
 | `stepMinutes`    | `number`                    | `30`         | Grid step in minutes (5, 10, 15, 30, 60)                                                                  |
 | `maxHeight`      | `number`                    | —            | Max height in px; enables vertical scroll with a sticky header                                            |
 | `minColumnWidth` | `number`                    | `0`          | Min day column width in px; enables horizontal scroll when needed                                         |
+| `monthRange`     | `[number, number]`          | —            | Allowed month offset from today `[back, forward]`. E.g. `[-1, 2]` — one month back, two forward           |
 
 ## Events
 
