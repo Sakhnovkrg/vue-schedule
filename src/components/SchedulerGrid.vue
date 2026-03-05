@@ -16,6 +16,7 @@ const props = withDefaults(
   defineProps<{
     ranges: WorkingRange[]
     weekDates: Date[]
+    month: Date
     dayStartHour?: number
     startHour?: number
     endHour?: number
@@ -91,15 +92,26 @@ function gridOffsetToMinutes(offset: number): number {
   return (gridStartMinutes + offset) % 1440
 }
 
-const dayColumns = computed(() =>
-  props.weekDates.map((date, i) => ({
-    index: i,
-    name: locale.value.daysShort[i],
-    date: date.getDate(),
-    fullDate: formatDate(date),
-    isToday: formatDate(date) === formatDate(new Date()),
-  }))
-)
+const dayColumns = computed(() => {
+  const m = props.month.getMonth()
+  return props.weekDates.map((date, i) => {
+    const inMonth = date.getMonth() === m
+    const prevInMonth = i > 0 && props.weekDates[i - 1].getMonth() === m
+    const nextInMonth =
+      i < props.weekDates.length - 1 &&
+      props.weekDates[i + 1].getMonth() === m
+    return {
+      index: i,
+      name: locale.value.daysShort[i],
+      date: date.getDate(),
+      fullDate: formatDate(date),
+      isToday: formatDate(date) === formatDate(new Date()),
+      outOfMonth: !inMonth,
+      monthBoundaryLeft: inMonth && !prevInMonth && i > 0,
+      monthBoundaryRight: inMonth && !nextInMonth && i < 6,
+    }
+  })
+})
 
 function isRangeVisible(range: WorkingRange): boolean {
   const startOff = minutesToGridOffset(range.start)
@@ -455,7 +467,12 @@ function onRangeTouchStart(e: TouchEvent, rangeId: string) {
         v-for="col in dayColumns"
         :key="col.index"
         class="day-header header-cell"
-        :class="{ today: col.isToday }"
+        :class="{
+          today: col.isToday,
+          'out-of-month': col.outOfMonth,
+          'month-boundary-left': col.monthBoundaryLeft,
+          'month-boundary-right': col.monthBoundaryRight,
+        }"
         @dblclick="onDayDblClick(col.index)"
         @contextmenu.prevent="onDayContext($event, col.index)"
       >
@@ -483,7 +500,12 @@ function onRangeTouchStart(e: TouchEvent, rangeId: string) {
           }
         "
         class="day-column"
-        :class="{ today: col.isToday }"
+        :class="{
+          today: col.isToday,
+          'out-of-month': col.outOfMonth,
+          'month-boundary-left': col.monthBoundaryLeft,
+          'month-boundary-right': col.monthBoundaryRight,
+        }"
         @mouseenter="onColumnMouseEnter(col.index)"
         @mouseleave="onColumnMouseLeave"
         @mousedown="onColumnMouseDown($event, col.index)"
@@ -594,6 +616,7 @@ function onRangeTouchStart(e: TouchEvent, rangeId: string) {
 }
 
 .day-header {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -672,6 +695,35 @@ function onRangeTouchStart(e: TouchEvent, rangeId: string) {
 .hour-cell:last-child {
   border-bottom: none;
 }
+
+.month-boundary-left {
+  border-left: 2px solid var(--scheduler-range-bg, #4a90d9);
+}
+
+.day-header.month-boundary-left::after {
+  content: '';
+  position: absolute;
+  left: -2px;
+  bottom: -2px;
+  width: 2px;
+  height: 2px;
+  background: var(--scheduler-range-bg, #4a90d9);
+}
+
+.month-boundary-right {
+  border-right: 2px solid var(--scheduler-range-bg, #4a90d9);
+}
+
+.day-header.month-boundary-right::after {
+  content: '';
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 2px;
+  height: 2px;
+  background: var(--scheduler-range-bg, #4a90d9);
+}
+
 
 .create-preview {
   position: absolute;

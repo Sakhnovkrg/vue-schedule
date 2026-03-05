@@ -318,6 +318,7 @@ function onRangeDelete(id: string) {
       ref="gridRef"
       :ranges="internalRanges"
       :week-dates="weekDates"
+      :month="currentMonth"
       :day-start-hour="dayStartHour"
       :start-hour="startHour"
       :end-hour="endHour"

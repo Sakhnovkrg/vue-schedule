@@ -12,39 +12,34 @@ const emit = defineEmits<{
   select: [index: number]
 }>()
 
-const currentMonth = computed(() => props.month.getMonth())
+const clampedWeeks = computed(() => {
+  const m = props.month.getMonth()
+  const y = props.month.getFullYear()
+  const firstDay = 1
+  const lastDay = new Date(y, m + 1, 0).getDate()
 
-function isOutOfMonth(date: Date): boolean {
-  return date.getMonth() !== currentMonth.value
-}
+  return props.weeks.map(week => {
+    const from = week.start.getMonth() === m ? week.start.getDate() : firstDay
+    const to = week.end.getMonth() === m ? week.end.getDate() : lastDay
+    return { ...week, from, to }
+  })
+})
 </script>
 
 <template>
   <div class="scheduler-week-selector">
     <button
-      v-for="week in weeks"
+      v-for="week in clampedWeeks"
       :key="week.index"
       class="scheduler-week-btn"
       :class="{ active: week.index === activeIndex }"
       @click="emit('select', week.index)"
     >
-      <span class="week-label-inline">
-        <span :class="{ 'out-of-month': isOutOfMonth(week.start) }">{{
-          week.start.getDate()
-        }}</span>
-        <span>–</span>
-        <span :class="{ 'out-of-month': isOutOfMonth(week.end) }">{{
-          week.end.getDate()
-        }}</span>
-      </span>
+      <span class="week-label-inline">{{ week.from }}–{{ week.to }}</span>
       <span class="week-label-stacked">
-        <span :class="{ 'out-of-month': isOutOfMonth(week.start) }">{{
-          week.start.getDate()
-        }}</span>
+        <span>{{ week.from }}</span>
         <span class="week-dash">–</span>
-        <span :class="{ 'out-of-month': isOutOfMonth(week.end) }">{{
-          week.end.getDate()
-        }}</span>
+        <span>{{ week.to }}</span>
       </span>
     </button>
   </div>
@@ -108,9 +103,5 @@ function isOutOfMonth(date: Date): boolean {
   background: var(--scheduler-range-bg, #4a90d9);
   color: #fff;
   border-color: var(--scheduler-range-bg, #4a90d9);
-}
-
-.out-of-month {
-  opacity: 0.6;
 }
 </style>
