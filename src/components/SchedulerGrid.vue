@@ -99,8 +99,7 @@ const dayColumns = computed(() => {
     const inMonth = date.getMonth() === m
     const prevInMonth = i > 0 && props.weekDates[i - 1].getMonth() === m
     const nextInMonth =
-      i < props.weekDates.length - 1 &&
-      props.weekDates[i + 1].getMonth() === m
+      i < props.weekDates.length - 1 && props.weekDates[i + 1].getMonth() === m
     return {
       index: i,
       name: locale.value.daysShort[i],
@@ -690,12 +689,18 @@ function onRangeTouchStart(e: TouchEvent, rangeId: string) {
   border-radius: var(--scheduler-radius, 8px);
   cursor: pointer;
   color: color-mix(in srgb, var(--scheduler-border-color, #d0d5dd) 50%, #000);
-  transition: color 0.15s, background 0.15s;
+  transition:
+    color 0.15s,
+    background 0.15s;
 }
 
 .refresh-btn:hover {
   color: var(--scheduler-range-bg, #4a90d9);
-  background: color-mix(in srgb, var(--scheduler-border-color, #d0d5dd) 30%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--scheduler-border-color, #d0d5dd) 30%,
+    transparent
+  );
 }
 
 .hour-label {
@@ -759,7 +764,6 @@ function onRangeTouchStart(e: TouchEvent, rangeId: string) {
   height: 2px;
   background: var(--scheduler-range-bg, #4a90d9);
 }
-
 
 .create-preview {
   position: absolute;

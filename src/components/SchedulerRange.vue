@@ -120,11 +120,13 @@ const timeLabel = computed(() => {
 }
 
 .resize-handle.top {
-  border-radius: var(--scheduler-range-radius, 4px) var(--scheduler-range-radius, 4px) 0 0;
+  border-radius: var(--scheduler-range-radius, 4px)
+    var(--scheduler-range-radius, 4px) 0 0;
 }
 
 .resize-handle.bottom {
-  border-radius: 0 0 var(--scheduler-range-radius, 4px) var(--scheduler-range-radius, 4px);
+  border-radius: 0 0 var(--scheduler-range-radius, 4px)
+    var(--scheduler-range-radius, 4px);
 }
 
 .range-content {
