@@ -72,16 +72,21 @@ async function onRangeCreate(range: Omit<WorkingRange, 'id'>) {
   }
   ranges.value.push(optimistic)
 
-  const created = await apiCreate({
-    doctor_id: DOCTOR_ID,
-    work_date: range.date,
-    start_time: hoursToTime(range.start),
-    end_time: hoursToTime(range.end),
-  })
+  try {
+    const created = await apiCreate({
+      doctor_id: DOCTOR_ID,
+      work_date: range.date,
+      start_time: hoursToTime(range.start),
+      end_time: hoursToTime(range.end),
+    })
 
-  const idx = ranges.value.findIndex(r => r.id === localId)
-  if (idx >= 0) {
-    ranges.value[idx] = toInternal(created)
+    const idx = ranges.value.findIndex(r => r.id === localId)
+    if (idx >= 0) {
+      ranges.value[idx] = toInternal(created)
+    }
+  } catch (e) {
+    ranges.value = ranges.value.filter(r => r.id !== localId)
+    alert(e instanceof Error ? e.message : 'Failed to create range')
   }
 }
 
@@ -98,19 +103,27 @@ async function onRangeUpdate(range: WorkingRange, previous: WorkingRange) {
     ranges.value[idx] = { ...range, date: workDate, pending: true }
   }
 
-  const result = await apiUpdate(Number(range.id), {
-    work_date: workDate,
-    start_time: hoursToTime(range.start),
-    end_time: hoursToTime(range.end),
-  })
+  try {
+    const result = await apiUpdate(Number(range.id), {
+      work_date: workDate,
+      start_time: hoursToTime(range.start),
+      end_time: hoursToTime(range.end),
+    })
 
-  const idx2 = ranges.value.findIndex(r => r.id === range.id)
-  if (idx2 >= 0) {
-    if (result) {
-      ranges.value[idx2] = { ...ranges.value[idx2], pending: false }
-    } else {
+    const idx2 = ranges.value.findIndex(r => r.id === range.id)
+    if (idx2 >= 0) {
+      if (result) {
+        ranges.value[idx2] = { ...ranges.value[idx2], pending: false }
+      } else {
+        ranges.value[idx2] = { ...previous }
+      }
+    }
+  } catch (e) {
+    const idx2 = ranges.value.findIndex(r => r.id === range.id)
+    if (idx2 >= 0) {
       ranges.value[idx2] = { ...previous }
     }
+    alert(e instanceof Error ? e.message : 'Failed to update range')
   }
 }
 
@@ -151,17 +164,23 @@ async function onClipboardPaste(newRanges: WorkingRange[]) {
   }
   ranges.value = [...ranges.value, ...optimistic]
 
-  const apiRanges = newRanges.map(r => ({
-    doctor_id: DOCTOR_ID,
-    work_date: r.date,
-    start_time: hoursToTime(r.start),
-    end_time: hoursToTime(r.end),
-  }))
-  const created = await apiCreateMany(apiRanges)
+  try {
+    const apiRanges = newRanges.map(r => ({
+      doctor_id: DOCTOR_ID,
+      work_date: r.date,
+      start_time: hoursToTime(r.start),
+      end_time: hoursToTime(r.end),
+    }))
+    const created = await apiCreateMany(apiRanges)
 
-  const localIdSet = new Set(localIds)
-  ranges.value = ranges.value.filter(r => !localIdSet.has(r.id))
-  ranges.value.push(...created.map(toInternal))
+    const localIdSet = new Set(localIds)
+    ranges.value = ranges.value.filter(r => !localIdSet.has(r.id))
+    ranges.value.push(...created.map(toInternal))
+  } catch (e) {
+    const localIdSet = new Set(localIds)
+    ranges.value = ranges.value.filter(r => !localIdSet.has(r.id))
+    alert(e instanceof Error ? e.message : 'Failed to paste ranges')
+  }
 }
 </script>
 

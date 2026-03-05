@@ -16,6 +16,10 @@ function delay(): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
+function isSunday(workDate: string): boolean {
+  return new Date(workDate + 'T00:00:00').getDay() === 0
+}
+
 export async function getRanges(
   doctorId: number,
   filterDate?: string
@@ -41,6 +45,9 @@ export async function createRanges(
   ranges: Omit<ApiWorkingRange, 'id'>[]
 ): Promise<ApiWorkingRange[]> {
   await delay()
+  if (ranges.some(r => isSunday(r.work_date))) {
+    throw new Error('Sunday is a day off!')
+  }
   const created: ApiWorkingRange[] = []
   for (const r of ranges) {
     const item: ApiWorkingRange = { ...r, id: nextId++ }
@@ -62,6 +69,9 @@ export async function updateRange(
   data: Partial<Omit<ApiWorkingRange, 'id'>>
 ): Promise<ApiWorkingRange | null> {
   await delay()
+  if (data.work_date && isSunday(data.work_date)) {
+    throw new Error('Sunday is a day off!')
+  }
   const idx = store.findIndex(r => r.id === id)
   if (idx < 0) return null
   store[idx] = { ...store[idx], ...data }
