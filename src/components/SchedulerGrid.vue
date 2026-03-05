@@ -628,6 +628,11 @@ function onRangeTouchStart(e: TouchEvent, rangeId: string) {
   border-right: none;
 }
 
+.day-header.out-of-month .day-name,
+.day-header.out-of-month .day-date {
+  opacity: 0.5;
+}
+
 .day-header.today {
   background: var(--scheduler-today-bg, #eff8ff);
 }
